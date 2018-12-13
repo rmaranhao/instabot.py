@@ -20,7 +20,7 @@ bot = InstaBot(
               'loirasbh', 'morenasbh', 'sensualbh', 'sensualart', 'boudoir', 'boudoirbh', 
               'boudoirportrait', 'lagoadonado', 'mangabeiras', 'cabeloruivo', 'ruivanatural',
               'vestidodossonhos', 'casamentoperfeito', 'fotografiaporamor', 'ruivocobreado',
-              'instanoivas', 'maquiagembrasil', 'enxovaldeluxo'],
+              'instanoivas', 'maquiagembrasil', 'enxovaldeluxo', 'luzsuavebh'],
     tag_blacklist=['rain', 'thunderstorm', 'babe', 'instahot', 'hotbabe', 'sensual'],
     user_blacklist={},
     max_like_for_one_tag=400,
