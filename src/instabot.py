@@ -15,6 +15,7 @@ import sys
 import sqlite3
 import time
 import requests
+import instaloader
 from .sql_updates import check_and_update, check_already_liked
 from .sql_updates import check_already_followed, check_already_unfollowed
 from .sql_updates import insert_media, insert_username, insert_unfollow_count
@@ -160,6 +161,7 @@ class InstaBot:
                  unwanted_username_list=[],
                  unfollow_whitelist=[]):
 
+        self.instaload = instaloader.Instaloader()
         self.database_name = database_name
         self.follows_db = sqlite3.connect(database_name, timeout=0, isolation_level=None)
         self.follows_db_c = self.follows_db.cursor()
@@ -431,10 +433,8 @@ class InstaBot:
         """ Get username by user_id """
         if self.login_status:
             try:
-                url_info = self.api_user_detail % user_id
-                r = self.s.get(url_info, headers="")
-                all_data = json.loads(r.text)
-                username = all_data["user"]["username"]
+                profile = instaloader.Profile.from_id(self.instaload.context,  user_id)
+                username = profile.username
                 return username
             except:
                 logging.exception("Except on get_username_by_user_id")
@@ -563,6 +563,9 @@ class InstaBot:
                                     # Some error. If repeated - can be ban!
                                     if self.error_400 >= self.error_400_to_ban:
                                         # Look like you banned!
+                                        log_string = "Possible ban: %i" \
+                                                 % (self.ban_sleep_time)
+                                        self.write_log(log_string)
                                         time.sleep(self.ban_sleep_time)
                                     else:
                                         self.error_400 += 1
@@ -679,6 +682,8 @@ class InstaBot:
                     self.write_log(log_string)
                     insert_unfollow_count(self, user_id=user_id)
                 else:
+                    log_string = "Status %i" % unfollow.status_code
+                    self.write_log(log_string)
                     log_string = "Slow Down - Pausing for 5 minutes so we don't get banned!"
                     self.write_log(log_string)
                     time.sleep(300)
@@ -729,11 +734,11 @@ class InstaBot:
                 # ------------------- Follow -------------------
                 self.new_auto_mod_follow()
                 # ------------------- Unfollow -------------------
-                self.new_auto_mod_unfollow()
+                # self.new_auto_mod_unfollow()
                 # ------------------- Comment -------------------
                 self.new_auto_mod_comments()
                 # Bot iteration in 1 sec
-                time.sleep(3)
+                time.sleep(1)
                 # print("Tic!")
             else:
                 print("sleeping until {hour}:{min}".format(hour=self.start_at_h,
