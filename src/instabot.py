@@ -734,7 +734,8 @@ class InstaBot:
                 # ------------------- Follow -------------------
                 self.new_auto_mod_follow()
                 # ------------------- Unfollow -------------------
-                # self.new_auto_mod_unfollow()
+                # Se der erro no unfollow comente a linha a seguir.
+                self.new_auto_mod_unfollow()
                 # ------------------- Comment -------------------
                 self.new_auto_mod_comments()
                 # Bot iteration in 1 sec
